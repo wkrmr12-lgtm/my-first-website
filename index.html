@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>구름 바이브코딩 첫 수업</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root,
+    html[data-theme="dark"] {
+      --bg: linear-gradient(135deg, #0c1224, #243c73);
+      --text: #ffffff;
+      --heading-sub: #9ec5ff;
+      --body-text: #d6e2ff;
+      --button-bg: #4c8dff;
+      --button-hover: #76aaff;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --input-text: #0c1224;
+      --toggle-bg: rgba(255, 255, 255, 0.14);
+    }
+
+    html[data-theme="light"] {
+      --bg: linear-gradient(135deg, #eaf2ff, #c9dcff);
+      --text: #132044;
+      --heading-sub: #2a5db8;
+      --body-text: #3d4f73;
+      --button-bg: #3b7dff;
+      --button-hover: #2f6ae0;
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --input-text: #132044;
+      --toggle-bg: rgba(19, 32, 68, 0.08);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg);
+      font-family: Arial, sans-serif;
+      color: var(--text);
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      margin-top: 0;
+      padding: 10px 16px;
+      background: var(--toggle-bg);
+      color: var(--text);
+      border: none;
+      border-radius: 999px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .theme-toggle:hover {
+      background: var(--button-bg);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .card {
+      padding: 50px 30px;
+      max-width: 550px;
+    }
+
+    h1 {
+      font-size: 42px;
+      color: var(--text);
+    }
+
+    h2 {
+      color: var(--heading-sub);
+    }
+
+    p {
+      line-height: 1.8;
+      color: var(--body-text);
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 15px 30px;
+      background: var(--button-bg);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: var(--button-hover);
+      transform: scale(1.05);
+    }
+
+    .goal-box {
+      margin-top: 36px;
+      padding: 22px 18px;
+      border-radius: 16px;
+      background: var(--card-bg);
+      text-align: left;
+    }
+
+    .goal-box label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: var(--heading-sub);
+    }
+
+    .goal-box input {
+      width: 100%;
+      padding: 14px 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      color: var(--input-text);
+    }
+
+    .goal-box input:focus {
+      outline: 2px solid #76aaff;
+    }
+
+    .goal-hint {
+      margin: 10px 0 0;
+      font-size: 13px;
+      color: var(--heading-sub);
+    }
+  </style>
+</head>
+
+<body>
+  <button class="theme-toggle" id="themeToggle" type="button">
+    ☀️ 라이트 모드
+  </button>
+
+  <div class="card">
+    <p>☁️ GOORM VIBE CODING · DAY 01</p>
+
+    <h1 id="greeting">안녕하세요! 👋</h1>
+
+    <h2>바이브코딩에 오신 것을 환영합니다!</h2>
+
+    <p>
+      코딩을 몰라도 괜찮아요.<br>
+      여러분의 상상력이 코드가 되는 순간!<br>
+      오늘부터 함께 시작해 봅시다.
+    </p>
+
+    <button onclick="sayHello()">
+      🚀 첫 번째 버튼 클릭!
+    </button>
+
+    <p id="message"></p>
+
+    <div class="goal-box">
+      <label for="userName">내 이름</label>
+      <input
+        id="userName"
+        type="text"
+        placeholder="이름을 입력하면 인삿말이 바뀌어요"
+      >
+    </div>
+
+    <div class="goal-box">
+      <label for="todayGoal">오늘의 목표</label>
+      <input
+        id="todayGoal"
+        type="text"
+        placeholder="오늘 이루고 싶은 목표를 적어보세요"
+      >
+      <p class="goal-hint" id="goalHint">입력하면 자동으로 저장됩니다.</p>
+    </div>
+  </div>
+
+  <script>
+    const GOAL_KEY = "todayGoal";
+    const NAME_KEY = "userName";
+    const THEME_KEY = "theme";
+
+    const goalInput = document.getElementById("todayGoal");
+    const goalHint = document.getElementById("goalHint");
+    const nameInput = document.getElementById("userName");
+    const greeting = document.getElementById("greeting");
+    const themeToggle = document.getElementById("themeToggle");
+
+    const savedGoal = localStorage.getItem(GOAL_KEY);
+    if (savedGoal) {
+      goalInput.value = savedGoal;
+      goalHint.textContent = "저장된 목표가 불러와졌어요.";
+    }
+
+    goalInput.addEventListener("input", function () {
+      localStorage.setItem(GOAL_KEY, goalInput.value);
+      goalHint.textContent = "자동 저장됨";
+    });
+
+    function updateGreeting(name) {
+      const trimmed = name.trim();
+      if (trimmed) {
+        greeting.textContent = "안녕하세요, " + trimmed + "님! 👋";
+      } else {
+        greeting.textContent = "안녕하세요! 👋";
+      }
+    }
+
+    const savedName = localStorage.getItem(NAME_KEY);
+    if (savedName) {
+      nameInput.value = savedName;
+      updateGreeting(savedName);
+    }
+
+    nameInput.addEventListener("input", function () {
+      localStorage.setItem(NAME_KEY, nameInput.value);
+      updateGreeting(nameInput.value);
+    });
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      if (theme === "light") {
+        themeToggle.textContent = "🌙 다크 모드";
+      } else {
+        themeToggle.textContent = "☀️ 라이트 모드";
+      }
+    }
+
+    const savedTheme = localStorage.getItem(THEME_KEY) || "dark";
+    applyTheme(savedTheme);
+
+    themeToggle.addEventListener("click", function () {
+      const current = document.documentElement.getAttribute("data-theme");
+      const next = current === "dark" ? "light" : "dark";
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    });
+
+    function sayHello() {
+      document.getElementById("message").textContent =
+        "🎉 축하합니다! 첫 번째 인터랙션을 완성했어요!";
+    }
+  </script>
+</body>
+</html>
